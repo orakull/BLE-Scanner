@@ -16,6 +16,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
+		
+		
+		if #available(iOS 8.0, *) {
+			let settings = UIUserNotificationSettings(forTypes: [.Alert, .Sound], categories: nil)
+		    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+		} else {
+		    print("can't register for local user notifications")
+		}
+		
 		return true
 	}
 

@@ -8,20 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		BC78B1321C34441B0050C2F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC78B1311C34441B0050C2F3 /* AppDelegate.swift */; };
-		BC78B1341C34441B0050C2F3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC78B1331C34441B0050C2F3 /* ViewController.swift */; };
 		BC78B1371C34441B0050C2F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC78B1351C34441B0050C2F3 /* Main.storyboard */; };
 		BC78B1391C34441B0050C2F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC78B1381C34441B0050C2F3 /* Assets.xcassets */; };
 		BC78B13C1C34441B0050C2F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC78B13A1C34441B0050C2F3 /* LaunchScreen.storyboard */; };
+		BC78B1441C3522890050C2F3 /* PeripheralTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC78B1431C3522890050C2F3 /* PeripheralTableVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BC78B12E1C34441B0050C2F3 /* BLE Scanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BLE Scanner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC78B1311C34441B0050C2F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BC78B1331C34441B0050C2F3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		BC78B1361C34441B0050C2F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BC78B1381C34441B0050C2F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC78B13B1C34441B0050C2F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC78B13D1C34441B0050C2F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC78B1431C3522890050C2F3 /* PeripheralTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralTableVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +54,22 @@
 		BC78B1301C34441B0050C2F3 /* BLE Scanner */ = {
 			isa = PBXGroup;
 			children = (
-				BC78B1311C34441B0050C2F3 /* AppDelegate.swift */,
-				BC78B1331C34441B0050C2F3 /* ViewController.swift */,
+				BC78B1431C3522890050C2F3 /* PeripheralTableVC.swift */,
 				BC78B1351C34441B0050C2F3 /* Main.storyboard */,
+				BC78B1451C3522920050C2F3 /* others */,
+			);
+			path = "BLE Scanner";
+			sourceTree = "<group>";
+		};
+		BC78B1451C3522920050C2F3 /* others */ = {
+			isa = PBXGroup;
+			children = (
+				BC78B1311C34441B0050C2F3 /* AppDelegate.swift */,
 				BC78B1381C34441B0050C2F3 /* Assets.xcassets */,
 				BC78B13A1C34441B0050C2F3 /* LaunchScreen.storyboard */,
 				BC78B13D1C34441B0050C2F3 /* Info.plist */,
 			);
-			path = "BLE Scanner";
+			name = others;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -96,6 +104,7 @@
 				TargetAttributes = {
 					BC78B12D1C34441B0050C2F3 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 8NXXYF76CS;
 					};
 				};
 			};
@@ -135,8 +144,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC78B1341C34441B0050C2F3 /* ViewController.swift in Sources */,
 				BC78B1321C34441B0050C2F3 /* AppDelegate.swift in Sources */,
+				BC78B1441C3522890050C2F3 /* PeripheralTableVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +256,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "BLE Scanner/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.orakull.BLE-Scanner";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -258,7 +269,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "BLE Scanner/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.orakull.BLE-Scanner";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -284,6 +297,7 @@
 				BC78B1421C34441B0050C2F3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
