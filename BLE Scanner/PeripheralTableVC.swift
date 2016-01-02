@@ -29,7 +29,7 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 		tableView.rowHeight = UITableViewAutomaticDimension
-		tableView.estimatedRowHeight = 50
+		tableView.estimatedRowHeight = 60
 
 		centralManager = CBCentralManager(delegate: self, queue: nil)
     }
@@ -75,9 +75,6 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 
 		cell.headerLabel.text = peripheral.name
 		cell.descriptionLabel.text = peripheral.description
-
-//		cell.textLabel?.text = peripheral.name
-//		cell.detailTextLabel?.text = peripheral.description
 
         return cell
     }
