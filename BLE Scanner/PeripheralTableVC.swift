@@ -23,15 +23,19 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		print("scanning...")
 		peripherals = [CBPeripheral]()
 		tableView.reloadData()
+//		let uuid1 = CBUUID(string: "180A")
+//		let uuid2 = CBUUID(string: "180D")
+//		centralManager.scanForPeripheralsWithServices([uuid1, uuid2], options: nil)
 		centralManager.scanForPeripheralsWithServices(nil, options: nil)
 	}
+	
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 60
 
-		centralManager = CBCentralManager(delegate: self, queue: nil)
+		centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: "BLEScanner"])
     }
 
 	func centralManagerDidUpdateState(central: CBCentralManager) {
@@ -45,6 +49,7 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		if !peripherals.contains(peripheral) {
 			peripherals.append(peripheral)
 			print("discovered \(peripheral.name ?? "Noname") RSSI: \(RSSI)\n\(advertisementData)")
+			print(peripheral.services)
 		}
 		
 		UIApplication.sharedApplication().cancelAllLocalNotifications()
@@ -52,19 +57,18 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		let notif = UILocalNotification()
 		notif.alertBody = peripheral.name
 		notif.soundName = UILocalNotificationDefaultSoundName
-//		notif.fireDate = NSDate(timeIntervalSinceNow: 1)
 		UIApplication.sharedApplication().presentLocalNotificationNow(notif)
-//		UIApplication.sharedApplication().scheduleLocalNotification(notif)
-		
 		
 		tableView.reloadData()
 	}
 	
+	func centralManager(central: CBCentralManager, willRestoreState dict: [String : AnyObject]) {
+		
+	}
 
     // MARK: - Table view data source
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return peripherals.count
     }
 

@@ -7,16 +7,17 @@
 //
 
 import UIKit
+import CoreBluetooth
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 
+	lazy var peripheralTableVC: PeripheralTableVC = PeripheralTableVC()
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
-		
 		
 		if #available(iOS 8.0, *) {
 			let settings = UIUserNotificationSettings(forTypes: [.Alert, .Sound], categories: nil)
@@ -25,15 +26,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		    print("can't register for local user notifications")
 		}
 		
+		if let launchOptions = launchOptions {
+			let centrals = launchOptions[UIApplicationLaunchOptionsBluetoothCentralsKey]
+			print(centrals)
+			
+			NSLog("find centrals \(centrals)")
+			
+//			let notif = UILocalNotification()
+//			notif.alertBody = "ok!"
+//			notif.soundName = UILocalNotificationDefaultSoundName
+//			UIApplication.sharedApplication().presentLocalNotificationNow(notif)
+//			
+//			if let centrals = centrals as? [String] {
+//				for central in centrals {
+//					print(central)
+//					peripheralTableVC.centralManager = CBCentralManager(delegate: peripheralTableVC, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: central])
+//				}
+//			}
+			
+		}
+		
+		
 		return true
 	}
 
 	func applicationWillResignActive(application: UIApplication) {
+		print("applicationWillResignActive")
 		// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 		// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 	}
 
 	func applicationDidEnterBackground(application: UIApplication) {
+		print("applicationDidEnterBackground")
 		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 		// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	}
@@ -47,6 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	func applicationWillTerminate(application: UIApplication) {
+		print("applicationWillTerminate")
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 
