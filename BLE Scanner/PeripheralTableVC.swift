@@ -69,12 +69,19 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
 		NSLog("discovered \(peripheral.name ?? "Noname") RSSI: \(RSSI)\n\(advertisementData)")
 		
-		if let serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] {
-			let UUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as! [CBUUID]
-			peripherals.append((peripheral, serviceUUIDs.count, UUIDs))
-		} else {
-			peripherals.append((peripheral, 0, nil))
+		let contains = peripherals.contains { (peripheralInner: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?) -> Bool in
+			return peripheral == peripheralInner
 		}
+		
+		if !contains {
+			if let serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] {
+				let UUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as! [CBUUID]
+				peripherals.append((peripheral, serviceUUIDs.count, UUIDs))
+			} else {
+				peripherals.append((peripheral, 0, nil))
+			}
+		}
+		
 		
 		UIApplication.sharedApplication().cancelAllLocalNotifications()
 		

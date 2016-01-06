@@ -64,16 +64,24 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier(Constants.ServiceCell, forIndexPath: indexPath)
 		
+		var uuid: CBUUID?
 		switch indexPath.section {
 		case 0:
-			cell.textLabel?.text = "\(advertisementDataUUIDs[indexPath.row])"
+			uuid = advertisementDataUUIDs[indexPath.row]
 			cell.accessoryType = .None
 		case 1:
 			let service = peripheral.services![indexPath.row]
-			cell.textLabel?.text = "\(service.UUID)"
-			cell.detailTextLabel?.text = service.description
+			uuid = service.UUID
 			cell.accessoryType = .DisclosureIndicator
 		default: break
+		}
+		if let uuid = uuid {
+			cell.textLabel?.text = uuid.description
+			if #available(iOS 7.1, *) {
+				cell.detailTextLabel?.text = uuid.UUIDString
+			} else {
+				cell.detailTextLabel?.text = ""
+			}
 		}
 		
 		return cell
