@@ -11,22 +11,43 @@ import CoreBluetooth
 
 struct Constants {
 	static let PeripheralCell = "PeripheralCell"
+	static let ServiceCell = "ServiceCell"
 }
 
 class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	
 	var centralManager: CBCentralManager!
 	
-	var peripherals = [CBPeripheral]()
+	var peripherals = [(peripheral: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?)]()
+	
+	var scanning: Bool = false {
+		didSet {
+			title = scanning ? "Scanning..." : "Peripherals"
+			scanStopButtonItem.title = scanning ? "Stop" : "Scan"
+			
+			if scanning {
+//				let uuid1 = CBUUID(string: "180A")
+//				let uuid2 = CBUUID(string: "180D")
+//				centralManager.scanForPeripheralsWithServices([uuid1, uuid2], options: nil)
+				
+//				let uuid = CBUUID(string: "BD0F6577-4A38-4D71-AF1B-4E8F57708080")
+//				centralManager.scanForPeripheralsWithServices([uuid], options: nil)
+				
+				peripherals = [(peripheral: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?)]()
+				tableView.reloadData()
+				
+				centralManager.scanForPeripheralsWithServices(nil, options: nil)
+				NSLog("scanning...")
+			} else {
+				centralManager.stopScan()
+				NSLog("scanning stopped.")
+			}
+		}
+	}
 
-	@IBAction func scan(sender: AnyObject? = nil) {
-		print("scanning...")
-		peripherals = [CBPeripheral]()
-		tableView.reloadData()
-//		let uuid1 = CBUUID(string: "180A")
-//		let uuid2 = CBUUID(string: "180D")
-//		centralManager.scanForPeripheralsWithServices([uuid1, uuid2], options: nil)
-		centralManager.scanForPeripheralsWithServices(nil, options: nil)
+	@IBOutlet weak var scanStopButtonItem: UIBarButtonItem!
+	@IBAction func scanStop(sender: AnyObject? = nil) {
+		scanning = !scanning
 	}
 	
 	
@@ -37,19 +58,22 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 
 		centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: "BLEScanner"])
     }
+	
+	// MARK: - Central Manager Delegate
 
 	func centralManagerDidUpdateState(central: CBCentralManager) {
-		print(centralManager.state.description)
-		if centralManager.state == .PoweredOn {
-			scan()
-		}
+		NSLog(centralManager.state.description)
+		scanning = centralManager.state == .PoweredOn
 	}
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
-		if !peripherals.contains(peripheral) {
-			peripherals.append(peripheral)
-			print("discovered \(peripheral.name ?? "Noname") RSSI: \(RSSI)\n\(advertisementData)")
-			print(peripheral.services)
+		NSLog("discovered \(peripheral.name ?? "Noname") RSSI: \(RSSI)\n\(advertisementData)")
+		
+		if let serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] {
+			let UUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as! [CBUUID]
+			peripherals.append((peripheral, serviceUUIDs.count, UUIDs))
+		} else {
+			peripherals.append((peripheral, 0, nil))
 		}
 		
 		UIApplication.sharedApplication().cancelAllLocalNotifications()
@@ -62,8 +86,28 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		tableView.reloadData()
 	}
 	
-	func centralManager(central: CBCentralManager, willRestoreState dict: [String : AnyObject]) {
+	func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
+		NSLog("didConnectPeripheral \(peripheral.name)")
+		tableView.reloadData()
 		
+		if let serviceTableVC = navigationController?.topViewController as? ServiceTableVC {
+			peripheral.delegate = serviceTableVC
+		}
+		peripheral.discoverServices(nil)
+	}
+	
+	func centralManager(central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: NSError?) {
+		NSLog("didDisconnectPeripheral \(peripheral.name)")
+		tableView.reloadData()
+	}
+	
+	func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
+		NSLog("didFailToConnectPeripheral \(peripheral.name)")
+		tableView.reloadData()
+	}
+	
+	func centralManager(central: CBCentralManager, willRestoreState dict: [String : AnyObject]) {
+		NSLog("willRestoreState \(dict)")
 	}
 
     // MARK: - Table view data source
@@ -75,58 +119,33 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Constants.PeripheralCell, forIndexPath: indexPath) as! PeripheralCell
 
-        let peripheral = peripherals[indexPath.row]
+        let peripheralCouple = peripherals[indexPath.row]
 
-		cell.headerLabel.text = peripheral.name
-		cell.descriptionLabel.text = peripheral.description
+		cell.headerLabel.text = peripheralCouple.peripheral.name
+		cell.descriptionLabel.text = "Services: \(peripheralCouple.serviceCount)\n\(peripheralCouple.peripheral.description)"
 
         return cell
     }
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+		let indexPath = tableView.indexPathForSelectedRow!
+		let peripheralCouple = peripherals[indexPath.row]
+		let peripheral = peripheralCouple.peripheral
+		if let serviceTVC = segue.destinationViewController as? ServiceTableVC {
+			serviceTVC.peripheral = peripheral
+			serviceTVC.title = peripheral.name
+			serviceTVC.advertisementDataUUIDs = peripheralCouple.UUIDs
+			if peripheral.state != .Connected {
+				NSLog("connectPeripheral \(peripheral.name) (\(peripheral.state.description))")
+				centralManager.connectPeripheral(peripheral, options: nil)
+			} else {
+				peripheral.delegate = serviceTVC
+			}
+		}
+		tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
-    */
 
 }
 
