@@ -48,7 +48,7 @@
                                 <connections>
                                     <outlet property="descriptionLabel" destination="Kcr-ja-oQe" id="8sF-aP-jB3"/>
                                     <outlet property="headerLabel" destination="GwO-Zs-Q0D" id="13L-SW-QnX"/>
-                                    <segue destination="s1j-mo-URU" kind="show" id="VOv-PJ-DG9"/>
+                                    <segue destination="s1j-mo-URU" kind="show" identifier="" id="VOv-PJ-DG9"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -59,7 +59,12 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="dQD-Rt-0TP">
                         <barButtonItem key="backBarButtonItem" title="Peripherals" id="gyh-z6-gOu"/>
-                        <barButtonItem key="leftBarButtonItem" title="Scan" id="OOS-Cd-gEs">
+                        <barButtonItem key="leftBarButtonItem" title="Clear" id="qGR-Xf-pRB">
+                            <connections>
+                                <action selector="clear:" destination="6TK-yG-PzA" id="dzA-sX-Zlw"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Scan" id="OOS-Cd-gEs">
                             <connections>
                                 <action selector="scanStop:" destination="6TK-yG-PzA" id="O6e-aP-Z4Y"/>
                             </connections>
@@ -105,6 +110,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="L6s-0A-NfQ" kind="show" id="3le-lN-fLi"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -116,6 +124,34 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6xR-5q-waK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1173" y="358"/>
+        </scene>
+        <!--Table View Controller-->
+        <scene sceneID="TkO-3M-FCP">
+            <objects>
+                <tableViewController id="L6s-0A-NfQ" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="nbO-UM-Hbc">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CharacteristicCell" id="i2f-4f-LYM">
+                                <rect key="frame" x="0.0" y="92" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="i2f-4f-LYM" id="Ua5-KL-zbt">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="L6s-0A-NfQ" id="CKo-bx-ieL"/>
+                            <outlet property="delegate" destination="L6s-0A-NfQ" id="GnO-L0-6EG"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2z7-cJ-0BD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1554" y="358"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hSh-X9-jur">

@@ -12,6 +12,8 @@ import CoreBluetooth
 struct Constants {
 	static let PeripheralCell = "PeripheralCell"
 	static let ServiceCell = "ServiceCell"
+	static let CharacteristicCell = "CharacteristicCell"
+	static let ConnectTimeout: NSTimeInterval = 5
 }
 
 class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
@@ -19,6 +21,8 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	var centralManager: CBCentralManager!
 	
 	var peripherals = [(peripheral: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?)]()
+	
+	var connectTimer: NSTimer?
 	
 	var scanning: Bool = false {
 		didSet {
@@ -33,9 +37,6 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 //				let uuid = CBUUID(string: "BD0F6577-4A38-4D71-AF1B-4E8F57708080")
 //				centralManager.scanForPeripheralsWithServices([uuid], options: nil)
 				
-				peripherals = [(peripheral: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?)]()
-				tableView.reloadData()
-				
 				centralManager.scanForPeripheralsWithServices(nil, options: nil)
 				NSLog("scanning...")
 			} else {
@@ -45,11 +46,24 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		}
 	}
 
+	@IBAction func clear(sender: AnyObject) {
+		peripherals = [(peripheral: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?)]()
+		tableView.reloadData()
+	}
 	@IBOutlet weak var scanStopButtonItem: UIBarButtonItem!
 	@IBAction func scanStop(sender: AnyObject? = nil) {
 		scanning = !scanning
 	}
 	
+	func cancelConnections() {
+		print("cancelConnections")
+		for peripheralCouple in peripherals {
+			if peripheralCouple.peripheral.state == .Connected
+				|| peripheralCouple.peripheral.state == .Connecting {
+				centralManager.cancelPeripheralConnection(peripheralCouple.peripheral)
+			}
+		}
+	}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,11 +73,20 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: "BLEScanner"])
     }
 	
+	override func viewDidAppear(animated: Bool) {
+		cancelConnections()
+	}
+
 	// MARK: - Central Manager Delegate
 
 	func centralManagerDidUpdateState(central: CBCentralManager) {
 		NSLog(centralManager.state.description)
+		if centralManager.state != .PoweredOn {
+			navigationController?.popToViewController(self, animated: true)
+			UIAlertView(title: "Unable to scan", message: "bluetooth is in \(centralManager.state.description)-state", delegate: nil, cancelButtonTitle: "Ok").show()
+		}
 		scanning = centralManager.state == .PoweredOn
+		scanStopButtonItem.enabled = centralManager.state == .PoweredOn
 	}
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
@@ -97,6 +120,8 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		NSLog("didConnectPeripheral \(peripheral.name)")
 		tableView.reloadData()
 		
+		connectTimer?.invalidate()
+		
 		if let serviceTableVC = navigationController?.topViewController as? ServiceTableVC {
 			peripheral.delegate = serviceTableVC
 		}
@@ -106,11 +131,14 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	func centralManager(central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: NSError?) {
 		NSLog("didDisconnectPeripheral \(peripheral.name)")
 		tableView.reloadData()
+		navigationController?.popToViewController(self, animated: true)
 	}
 	
 	func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
-		NSLog("didFailToConnectPeripheral \(peripheral.name)")
+		NSLog("\tdidFailToConnectPeripheral \(peripheral.name)")
 		tableView.reloadData()
+		navigationController?.popToViewController(self, animated: true)
+		UIAlertView(title: "Fail To Connect", message: nil, delegate: nil, cancelButtonTitle: "Dismiss").show()
 	}
 	
 	func centralManager(central: CBCentralManager, willRestoreState dict: [String : AnyObject]) {
@@ -150,10 +178,10 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 			} else {
 				peripheral.delegate = serviceTVC
 			}
+			connectTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.ConnectTimeout, target: self, selector: "cancelConnections", userInfo: nil, repeats: false)
 		}
 		tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
-
 }
 
 extension CBPeripheralState {

@@ -11,8 +11,10 @@ import CoreBluetooth
 
 class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 	
+	var discovering = true
+	
 	var peripheral: CBPeripheral!
-	var advertisementDataUUIDs: [CBUUID]!
+	var advertisementDataUUIDs: [CBUUID]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +39,7 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 		} else {
 			NSLog("didDiscoverServices \(peripheral.services?.count)")
 		}
+		discovering = false
 		tableView.reloadData()
 	}
 
@@ -49,9 +52,10 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return advertisementDataUUIDs.count
+			return advertisementDataUUIDs?.count ?? 0
 		case 1:
-			return peripheral.services?.count ?? 0
+			let number = peripheral.services?.count ?? 0
+			return number + (discovering ? 1 : 0)
 		default:
 			return 0
 		}
@@ -67,12 +71,16 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 		var uuid: CBUUID?
 		switch indexPath.section {
 		case 0:
-			uuid = advertisementDataUUIDs[indexPath.row]
+			uuid = advertisementDataUUIDs?[indexPath.row]
 			cell.accessoryType = .None
 		case 1:
-			let service = peripheral.services![indexPath.row]
-			uuid = service.UUID
-			cell.accessoryType = .DisclosureIndicator
+			if let service = peripheral.services?[indexPath.row] {
+				uuid = service.UUID
+				cell.accessoryType = .DisclosureIndicator
+			} else {
+				cell.textLabel?.text = "discovering..."
+				cell.detailTextLabel?.text = ""
+			}
 		default: break
 		}
 		if let uuid = uuid {
