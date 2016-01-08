@@ -60,6 +60,33 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 			}
 		}
 	}
+	
+	func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+		if let error = error {
+			NSLog("didUpdateValueForCharacteristic error: \(error.localizedDescription)")
+			NSNotificationCenter.defaultCenter().postNotificationName(Constants.DidUpdateValueForCharacteristic, object: characteristic, userInfo: ["error": error])
+		} else {
+			NSNotificationCenter.defaultCenter().postNotificationName(Constants.DidUpdateValueForCharacteristic, object: characteristic)
+		}
+	}
+	
+	func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+		if let error = error {
+			NSLog("didWriteValueForCharacteristic error: \(error.localizedDescription)")
+			NSNotificationCenter.defaultCenter().postNotificationName(Constants.DidWriteValueForCharacteristic, object: characteristic, userInfo: ["error": error])
+		} else {
+			NSNotificationCenter.defaultCenter().postNotificationName(Constants.DidWriteValueForCharacteristic, object: characteristic)
+		}
+	}
+	
+	func peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+		if let error = error {
+			NSLog("didUpdateNotificationStateForCharacteristic error: \(error.localizedDescription)")
+			NSNotificationCenter.defaultCenter().postNotificationName(Constants.DidUpdateNotificationStateForCharacteristic, object: characteristic, userInfo: ["error": error])
+		} else {
+			NSNotificationCenter.defaultCenter().postNotificationName(Constants.DidUpdateNotificationStateForCharacteristic, object: characteristic)
+		}
+	}
 
     // MARK: - Table view data source
 	
@@ -125,7 +152,10 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 		case 0:
 			return false
 		case 1:
-			return peripheral.services![indexPath.row].characteristics != nil
+			guard let services = peripheral.services else { return false }
+			guard services.count > 0 else { tableView.reloadData(); return false }
+			guard let characteristics = services[indexPath.row].characteristics else { return false }
+			return characteristics.count > 0
 		default:
 			return false
 		}

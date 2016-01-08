@@ -13,7 +13,11 @@ struct Constants {
 	static let PeripheralCell = "PeripheralCell"
 	static let ServiceCell = "ServiceCell"
 	static let CharacteristicCell = "CharacteristicCell"
+	static let CharacteristicAccessCell = "CharacteristicAccessCell"
 	static let ConnectTimeout: NSTimeInterval = 5
+	static let DidUpdateValueForCharacteristic = "didUpdateValueForCharacteristic"
+	static let DidWriteValueForCharacteristic = "didWriteValueForCharacteristic"
+	static let DidUpdateNotificationStateForCharacteristic = "didUpdateNotificationStateForCharacteristic"
 }
 
 class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
