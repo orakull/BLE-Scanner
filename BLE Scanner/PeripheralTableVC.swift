@@ -49,6 +49,10 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	@IBAction func clear(sender: AnyObject) {
 		peripherals = [(peripheral: CBPeripheral, serviceCount: Int, UUIDs: [CBUUID]?)]()
 		tableView.reloadData()
+		if scanning {
+			scanning = false
+			scanning = true
+		}
 	}
 	@IBOutlet weak var scanStopButtonItem: UIBarButtonItem!
 	@IBAction func scanStop(sender: AnyObject? = nil) {
@@ -214,6 +218,36 @@ extension CBCentralManagerState {
 			return "Unknown"
 		case .Unsupported:
 			return "Unsupported"
+		}
+	}
+}
+
+extension CBCharacteristicProperties {
+	var description: String {
+		switch self {
+		case CBCharacteristicProperties.Broadcast:
+			return "Broadcast"
+		case CBCharacteristicProperties.Read:
+			return "Read"
+		case CBCharacteristicProperties.WriteWithoutResponse:
+			return "WriteWithoutResponse"
+		case CBCharacteristicProperties.Write:
+			return "Write"
+		case CBCharacteristicProperties.Notify:
+			return "Notify"
+		case CBCharacteristicProperties.Indicate:
+			return "Indicate"
+		case CBCharacteristicProperties.AuthenticatedSignedWrites:
+			return "AuthenticatedSignedWrites"
+		case CBCharacteristicProperties.ExtendedProperties:
+			return "ExtendedProperties"
+		case CBCharacteristicProperties.NotifyEncryptionRequired:
+			return "NotifyEncryptionRequired"
+		case CBCharacteristicProperties.IndicateEncryptionRequired:
+			return "IndicateEncryptionRequired"
+		default:
+			let array: [CBCharacteristicProperties] = [.Broadcast, .Read, .WriteWithoutResponse, .Write, .Notify, .Indicate, .AuthenticatedSignedWrites, .ExtendedProperties, .NotifyEncryptionRequired, .IndicateEncryptionRequired]
+			return array.filter { self.contains($0) }.map { $0.description }.joinWithSeparator(", ")
 		}
 	}
 }

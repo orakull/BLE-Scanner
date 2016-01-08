@@ -41,6 +41,24 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 		}
 		discovering = false
 		tableView.reloadData()
+		
+		if let services = peripheral.services {
+			for service in services {
+				peripheral.discoverCharacteristics(nil, forService: service)
+			}
+		}
+	}
+	
+	func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
+		if let error = error {
+			NSLog("didDiscoverCharacteristicsForService error: \(error.localizedDescription)")
+		} else {
+			NSLog("didDiscoverCharacteristicsForService \(service.characteristics?.count)")
+			if let row = peripheral.services?.indexOf(service) {
+				let indexPath = NSIndexPath(forRow: row, inSection: 1)
+				tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+			}
+		}
 	}
 
     // MARK: - Table view data source
@@ -68,45 +86,61 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier(Constants.ServiceCell, forIndexPath: indexPath)
 		
-		var uuid: CBUUID?
 		switch indexPath.section {
 		case 0:
-			uuid = advertisementDataUUIDs?[indexPath.row]
-			cell.accessoryType = .None
+			if let uuid = advertisementDataUUIDs?[indexPath.row] {
+				cell.textLabel?.text = uuid.description
+				if #available(iOS 7.1, *) {
+					cell.detailTextLabel?.text = uuid.UUIDString
+				} else {
+					cell.detailTextLabel?.text = ""
+				}
+				cell.accessoryType = .None
+			}
 		case 1:
 			if let service = peripheral.services?[indexPath.row] {
-				uuid = service.UUID
-				cell.accessoryType = .DisclosureIndicator
+				let uuid = service.UUID
+				cell.textLabel?.text = uuid.description
+				var details = ""
+				if let characteristics = service.characteristics {
+					details += "(characteristics: \(characteristics.count)) "
+				}
+				if #available(iOS 7.1, *) {
+					details += uuid.UUIDString
+				}
+				cell.detailTextLabel?.text = details
+				cell.accessoryType = service.characteristics == nil ? .None : .DisclosureIndicator
 			} else {
 				cell.textLabel?.text = "discovering..."
 				cell.detailTextLabel?.text = ""
 			}
 		default: break
 		}
-		if let uuid = uuid {
-			cell.textLabel?.text = uuid.description
-			if #available(iOS 7.1, *) {
-				cell.detailTextLabel?.text = uuid.UUIDString
-			} else {
-				cell.detailTextLabel?.text = ""
-			}
-		}
 		
 		return cell
 	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-		return indexPath.section == 1
+		switch indexPath.section {
+		case 0:
+			return false
+		case 1:
+			return peripheral.services![indexPath.row].characteristics != nil
+		default:
+			return false
+		}
 	}
 
-    /*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+		if let characteristicTableVC = segue.destinationViewController as? CharacteristicTableVC {
+			let indexPath = tableView.indexPathForSelectedRow!
+			if let service = peripheral.services?[indexPath.row] {
+				characteristicTableVC.peripharal = peripheral
+				characteristicTableVC.service = service
+			}
+		}
     }
-    */
 
 }

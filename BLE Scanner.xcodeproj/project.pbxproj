@@ -14,6 +14,7 @@
 		BC78B1391C34441B0050C2F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC78B1381C34441B0050C2F3 /* Assets.xcassets */; };
 		BC78B13C1C34441B0050C2F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC78B13A1C34441B0050C2F3 /* LaunchScreen.storyboard */; };
 		BC78B1441C3522890050C2F3 /* PeripheralTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC78B1431C3522890050C2F3 /* PeripheralTableVC.swift */; };
+		BCFDE4651C3DEA7300B1D6EC /* CharacteristicTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFDE4641C3DEA7300B1D6EC /* CharacteristicTableVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		BC78B13B1C34441B0050C2F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC78B13D1C34441B0050C2F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC78B1431C3522890050C2F3 /* PeripheralTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralTableVC.swift; sourceTree = "<group>"; };
+		BCFDE4641C3DEA7300B1D6EC /* CharacteristicTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicTableVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 			children = (
 				BC78B1431C3522890050C2F3 /* PeripheralTableVC.swift */,
 				BC50E34D1C39724700688A2E /* ServiceTableVC.swift */,
+				BCFDE4641C3DEA7300B1D6EC /* CharacteristicTableVC.swift */,
 				BC78B1351C34441B0050C2F3 /* Main.storyboard */,
 				BC1A648C1C3859EC00D16934 /* PeripheralCell.swift */,
 				BC78B1451C3522920050C2F3 /* others */,
@@ -151,6 +154,7 @@
 			files = (
 				BC78B1321C34441B0050C2F3 /* AppDelegate.swift in Sources */,
 				BC50E34E1C39724700688A2E /* ServiceTableVC.swift in Sources */,
+				BCFDE4651C3DEA7300B1D6EC /* CharacteristicTableVC.swift in Sources */,
 				BC1A648D1C3859EC00D16934 /* PeripheralCell.swift in Sources */,
 				BC78B1441C3522890050C2F3 /* PeripheralTableVC.swift in Sources */,
 			);
