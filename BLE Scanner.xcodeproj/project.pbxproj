@@ -11,6 +11,7 @@
 		BC21DE741C400AAA00A717C0 /* BackgroundModeTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC21DE731C400AAA00A717C0 /* BackgroundModeTableVC.swift */; };
 		BC2D84751C3F8C5200CD874E /* CharacteristicVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2D84741C3F8C5200CD874E /* CharacteristicVC.swift */; };
 		BC50E34E1C39724700688A2E /* ServiceTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC50E34D1C39724700688A2E /* ServiceTableVC.swift */; };
+		BC71423D1C41041B00B1D069 /* EditUUID_VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC71423C1C41041B00B1D069 /* EditUUID_VC.swift */; };
 		BC78B1321C34441B0050C2F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC78B1311C34441B0050C2F3 /* AppDelegate.swift */; };
 		BC78B1371C34441B0050C2F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC78B1351C34441B0050C2F3 /* Main.storyboard */; };
 		BC78B1391C34441B0050C2F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC78B1381C34441B0050C2F3 /* Assets.xcassets */; };
@@ -25,6 +26,7 @@
 		BC21DE731C400AAA00A717C0 /* BackgroundModeTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundModeTableVC.swift; sourceTree = "<group>"; };
 		BC2D84741C3F8C5200CD874E /* CharacteristicVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicVC.swift; sourceTree = "<group>"; };
 		BC50E34D1C39724700688A2E /* ServiceTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTableVC.swift; sourceTree = "<group>"; };
+		BC71423C1C41041B00B1D069 /* EditUUID_VC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUUID_VC.swift; sourceTree = "<group>"; };
 		BC78B12E1C34441B0050C2F3 /* BLE Scanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BLE Scanner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC78B1311C34441B0050C2F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC78B1361C34441B0050C2F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				BC1A648C1C3859EC00D16934 /* PeripheralCell.swift */,
 				BC78B1351C34441B0050C2F3 /* Main.storyboard */,
 				BC21DE731C400AAA00A717C0 /* BackgroundModeTableVC.swift */,
+				BC71423C1C41041B00B1D069 /* EditUUID_VC.swift */,
 				BCBC3E521C4016EA007AE86D /* BackgroundScanner.swift */,
 				BC78B1451C3522920050C2F3 /* others */,
 			);
@@ -168,6 +171,7 @@
 				BCBC3E531C4016EA007AE86D /* BackgroundScanner.swift in Sources */,
 				BC1A648D1C3859EC00D16934 /* PeripheralCell.swift in Sources */,
 				BC78B1441C3522890050C2F3 /* PeripheralTableVC.swift in Sources */,
+				BC71423D1C41041B00B1D069 /* EditUUID_VC.swift in Sources */,
 				BC2D84751C3F8C5200CD874E /* CharacteristicVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
