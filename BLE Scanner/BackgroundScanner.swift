@@ -22,15 +22,7 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 	var centralManager: CBCentralManager!
 	var UUIDs = [CBUUID]()
 	var peripherals = [(peripheral: CBPeripheral, date: NSDate)]()
-	var on = false {
-		didSet {
-			if on {
-				centralManager.scanForPeripheralsWithServices(UUIDs, options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
-			} else {
-				centralManager.stopScan()
-			}
-		}
-	}
+	var on = false
 	
 	override init() {
 		super.init()
@@ -39,9 +31,13 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 	
 	func startScan() {
 		if centralManager.state == .PoweredOn && on {
-			NSLog("background scanning")
+			NSLog("background scanning start")
 			centralManager.scanForPeripheralsWithServices(UUIDs, options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
 		}
+	}
+	func stopScan() {
+		NSLog("background scanning stop")
+		centralManager.stopScan()
 	}
 	func refreshScan() {
 		centralManager.stopScan()
@@ -73,18 +69,17 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 	}
 	
 	func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
-		NSLog("didDiscoverPeripheral \(peripheral)")
 		let alreadyFound = peripherals.contains { (p: CBPeripheral, date: NSDate) -> Bool in
 			return p.name == peripheral.name
 				&& p.identifier.isEqual(peripheral.identifier)
 				&& NSDate().timeIntervalSinceDate(date) < 10 * 60
 		}
-		guard !alreadyFound else { NSLog("already found"); return }
+		guard !alreadyFound else { return }
+		
+		NSLog("didDiscoverPeripheral \(peripheral)")
 		
 		peripherals.append((peripheral, NSDate()))
 		delegate?.updatePeripherals()
-		
-		UIApplication.sharedApplication().cancelAllLocalNotifications()
 		
 		let notif = UILocalNotification()
 		notif.alertBody = peripheral.name
@@ -92,6 +87,7 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 		    notif.alertTitle = peripheral.identifier.UUIDString
 		}
 		notif.soundName = UILocalNotificationDefaultSoundName
+		notif.applicationIconBadgeNumber = peripherals.count
 		UIApplication.sharedApplication().presentLocalNotificationNow(notif)
 	}
 	

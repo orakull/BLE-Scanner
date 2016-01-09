@@ -14,38 +14,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 
-	lazy var peripheralTableVC: PeripheralTableVC = PeripheralTableVC()
-
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
 		
 		if #available(iOS 8.0, *) {
-			let settings = UIUserNotificationSettings(forTypes: [.Alert, .Sound], categories: nil)
+			let settings = UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge], categories: nil)
 		    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-		} else {
-		    print("can't register for local user notifications")
 		}
 		
 		if let launchOptions = launchOptions {
 			let centrals = launchOptions[UIApplicationLaunchOptionsBluetoothCentralsKey]
-			print(centrals)
-			
 			NSLog("find centrals \(centrals)")
-			
-//			let notif = UILocalNotification()
-//			notif.alertBody = "ok!"
-//			notif.soundName = UILocalNotificationDefaultSoundName
-//			UIApplication.sharedApplication().presentLocalNotificationNow(notif)
-//			
-//			if let centrals = centrals as? [String] {
-//				for central in centrals {
-//					print(central)
-//					peripheralTableVC.centralManager = CBCentralManager(delegate: peripheralTableVC, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: central])
-//				}
-//			}
-			
 		}
-		
 		
 		return true
 	}
@@ -58,11 +38,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationDidEnterBackground(application: UIApplication) {
 		print("applicationDidEnterBackground")
+		BackgroundScanner.defaultScanner.startScan()
 		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 		// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	}
 
 	func applicationWillEnterForeground(application: UIApplication) {
+		BackgroundScanner.defaultScanner.stopScan()
 		// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 	}
 

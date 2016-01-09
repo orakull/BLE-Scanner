@@ -106,17 +106,21 @@ class BackgroundModeTableVC: UITableViewController, BackgroundScannerDelegate {
 		return indexPath.section == 1
 	}
 	
-    // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 1
+		return [1, 2].contains(indexPath.section)
     }
 
-    // Override to support editing the table view.
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-			guard indexPath.section == 1 else { return }
-            let uuid = scanner.UUIDs[indexPath.row]
-			scanner.removeUUID(uuid)
+			switch indexPath.section {
+			case 1:
+				let uuid = scanner.UUIDs[indexPath.row]
+				scanner.removeUUID(uuid)
+			case 2:
+				scanner.peripherals.removeAtIndex(indexPath.row)
+				tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+			default: break
+			}
         }
     }
 
