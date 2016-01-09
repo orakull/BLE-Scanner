@@ -39,10 +39,6 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 		NSLog("background scanning stop")
 		centralManager.stopScan()
 	}
-	func refreshScan() {
-		centralManager.stopScan()
-		startScan()
-	}
 	
 	func containsUUID(uuid: CBUUID) -> Bool {
 		return UUIDs.contains { uuid.isEqual($0) }
@@ -50,14 +46,12 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 	func addUUID(uuid: CBUUID) {
 		if !containsUUID(uuid) {
 			UUIDs.append(uuid)
-			refreshScan()
 			delegate?.updateUUIDs()
 		}
 	}
 	func removeUUID(uuid: CBUUID) {
 		if let index = UUIDs.indexOf(uuid) {
 			UUIDs.removeAtIndex(index)
-			refreshScan()
 			delegate?.updateUUIDs()
 		}
 	}

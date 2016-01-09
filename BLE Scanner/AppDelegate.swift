@@ -22,6 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
 		}
 		
+		UIApplication.sharedApplication().cancelAllLocalNotifications()
+		
 		if let launchOptions = launchOptions {
 			let centrals = launchOptions[UIApplicationLaunchOptionsBluetoothCentralsKey]
 			NSLog("find centrals \(centrals)")

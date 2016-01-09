@@ -32,6 +32,8 @@ class BackgroundModeTableVC: UITableViewController, BackgroundScannerDelegate {
         // Dispose of any resources that can be recreated.
     }
 	
+	// MARK: - Background scanner delegate
+	
 	func updateUUIDs() {
 		tableView.reloadData()
 	}
@@ -119,6 +121,7 @@ class BackgroundModeTableVC: UITableViewController, BackgroundScannerDelegate {
 			case 2:
 				scanner.peripherals.removeAtIndex(indexPath.row)
 				tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+				UIApplication.sharedApplication().applicationIconBadgeNumber = scanner.peripherals.count
 			default: break
 			}
         }
