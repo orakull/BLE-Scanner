@@ -21,7 +21,6 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 	
 	var centralManager: CBCentralManager!
 	var UUIDs = [CBUUID]()
-//	var UUIDs = [CBUUID(string: "180D")]
 	var peripherals = [(peripheral: CBPeripheral, date: NSDate)]()
 	var on = false {
 		didSet {
@@ -78,7 +77,7 @@ class BackgroundScanner: NSObject, CBCentralManagerDelegate {
 		let alreadyFound = peripherals.contains { (p: CBPeripheral, date: NSDate) -> Bool in
 			return p.name == peripheral.name
 				&& p.identifier.isEqual(peripheral.identifier)
-				&& NSDate().timeIntervalSinceDate(date) < 10 // * 60
+				&& NSDate().timeIntervalSinceDate(date) < 10 * 60
 		}
 		guard !alreadyFound else { NSLog("already found"); return }
 		
