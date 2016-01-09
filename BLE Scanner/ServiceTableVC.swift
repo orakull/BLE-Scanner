@@ -15,6 +15,8 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 	
 	var peripheral: CBPeripheral!
 	var advertisementDataUUIDs: [CBUUID]?
+	
+	let scanner = BackgroundScanner.defaultScanner
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,7 +124,8 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 				} else {
 					cell.detailTextLabel?.text = ""
 				}
-				cell.accessoryType = .None
+				cell.accessoryType = scanner.containsUUID(uuid) ? .Checkmark : .None
+				print("accessoryType \(cell.accessoryType)")
 			}
 		case 1:
 			if let service = peripheral.services?[indexPath.row] {
@@ -150,6 +153,15 @@ class ServiceTableVC: UITableViewController, CBPeripheralDelegate {
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		switch indexPath.section {
 		case 0:
+			guard let UUIDs = advertisementDataUUIDs else { return false }
+			let uuid = UUIDs[indexPath.row]
+			if scanner.containsUUID(uuid) {
+				scanner.removeUUID(uuid)
+			} else {
+				scanner.addUUID(uuid)
+			}
+			let cell = tableView.cellForRowAtIndexPath(indexPath)!
+			cell.accessoryType = scanner.containsUUID(uuid) ? .Checkmark : .None
 			return false
 		case 1:
 			guard let services = peripheral.services else { return false }

@@ -14,6 +14,10 @@ struct Constants {
 	static let ServiceCell = "ServiceCell"
 	static let CharacteristicCell = "CharacteristicCell"
 	static let CharacteristicAccessCell = "CharacteristicAccessCell"
+	static let SwitcherCell = "SwitcherCell"
+	static let ScanUUIDCell = "ScanUUIDCell"
+	static let FindedPeripheralCell = "FindedPeripheralCell"
+	
 	static let ConnectTimeout: NSTimeInterval = 5
 	static let DidUpdateValueForCharacteristic = "didUpdateValueForCharacteristic"
 	static let DidWriteValueForCharacteristic = "didWriteValueForCharacteristic"
@@ -28,7 +32,7 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	
 	var connectTimer: NSTimer?
 	
-	var scanning: Bool = false {
+	var scanning = false {
 		didSet {
 			title = scanning ? "Scanning..." : "Peripherals"
 			scanStopButtonItem.title = scanning ? "Stop" : "Scan"
@@ -66,10 +70,10 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 	func cancelConnections() {
 		print("cancelConnections")
 		for peripheralCouple in peripherals {
-			if peripheralCouple.peripheral.state == .Connected
-				|| peripheralCouple.peripheral.state == .Connecting {
+//			if peripheralCouple.peripheral.state == .Connected
+//				|| peripheralCouple.peripheral.state == .Connecting {
 				centralManager.cancelPeripheralConnection(peripheralCouple.peripheral)
-			}
+//			}
 		}
 	}
 	
@@ -78,7 +82,7 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 60
 
-		centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionRestoreIdentifierKey: "BLEScanner"])
+		centralManager = CBCentralManager(delegate: self, queue: nil)
     }
 	
 	override func viewDidAppear(animated: Bool) {
@@ -91,7 +95,10 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 		NSLog(centralManager.state.description)
 		if centralManager.state != .PoweredOn {
 			navigationController?.popToViewController(self, animated: true)
-			UIAlertView(title: "Unable to scan", message: "bluetooth is in \(centralManager.state.description)-state", delegate: nil, cancelButtonTitle: "Ok").show()
+			if scanning {
+				UIAlertView(title: "Unable to scan", message: "bluetooth is in \(centralManager.state.description)-state", delegate: nil, cancelButtonTitle: "Ok").show()
+			}
+			tableView.reloadData()
 		}
 		scanning = centralManager.state == .PoweredOn
 		scanStopButtonItem.enabled = centralManager.state == .PoweredOn
@@ -112,15 +119,6 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 				peripherals.append((peripheral, 0, nil))
 			}
 		}
-		
-		
-		UIApplication.sharedApplication().cancelAllLocalNotifications()
-		
-		let notif = UILocalNotification()
-		notif.alertBody = peripheral.name
-		notif.soundName = UILocalNotificationDefaultSoundName
-		UIApplication.sharedApplication().presentLocalNotificationNow(notif)
-		
 		tableView.reloadData()
 	}
 	
@@ -166,9 +164,14 @@ class PeripheralTableVC: UITableViewController, CBCentralManagerDelegate {
 
 		cell.headerLabel.text = peripheralCouple.peripheral.name
 		cell.descriptionLabel.text = "Services: \(peripheralCouple.serviceCount)\n\(peripheralCouple.peripheral.description)"
+		cell.accessoryType = centralManager.state == .PoweredOn ? .DisclosureIndicator : .None
 
         return cell
     }
+	
+	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		return centralManager.state == .PoweredOn
+	}
 
     // MARK: - Navigation
 
